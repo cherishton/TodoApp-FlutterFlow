@@ -50,6 +50,11 @@ class UsersRecord extends FirestoreRecord {
   DateTime? get birthday => _birthday;
   bool hasBirthday() => _birthday != null;
 
+  // "lucky_number" field.
+  int? _luckyNumber;
+  int get luckyNumber => _luckyNumber ?? 0;
+  bool hasLuckyNumber() => _luckyNumber != null;
+
   void _initializeFields() {
     _email = snapshotData['email'] as String?;
     _displayName = snapshotData['display_name'] as String?;
@@ -58,6 +63,7 @@ class UsersRecord extends FirestoreRecord {
     _createdTime = snapshotData['created_time'] as DateTime?;
     _phoneNumber = snapshotData['phone_number'] as String?;
     _birthday = snapshotData['birthday'] as DateTime?;
+    _luckyNumber = castToType<int>(snapshotData['lucky_number']);
   }
 
   static CollectionReference get collection =>
@@ -89,8 +95,7 @@ class UsersRecord extends FirestoreRecord {
 
   @override
   bool operator ==(other) =>
-      other is UsersRecord &&
-      reference.path.hashCode == other.reference.path.hashCode;
+      other is UsersRecord && reference.path == other.reference.path;
 }
 
 Map<String, dynamic> createUsersRecordData({
@@ -101,6 +106,7 @@ Map<String, dynamic> createUsersRecordData({
   DateTime? createdTime,
   String? phoneNumber,
   DateTime? birthday,
+  int? luckyNumber,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -111,6 +117,7 @@ Map<String, dynamic> createUsersRecordData({
       'created_time': createdTime,
       'phone_number': phoneNumber,
       'birthday': birthday,
+      'lucky_number': luckyNumber,
     }.withoutNulls,
   );
 
@@ -128,7 +135,8 @@ class UsersRecordDocumentEquality implements Equality<UsersRecord> {
         e1?.uid == e2?.uid &&
         e1?.createdTime == e2?.createdTime &&
         e1?.phoneNumber == e2?.phoneNumber &&
-        e1?.birthday == e2?.birthday;
+        e1?.birthday == e2?.birthday &&
+        e1?.luckyNumber == e2?.luckyNumber;
   }
 
   @override
@@ -139,7 +147,8 @@ class UsersRecordDocumentEquality implements Equality<UsersRecord> {
         e?.uid,
         e?.createdTime,
         e?.phoneNumber,
-        e?.birthday
+        e?.birthday,
+        e?.luckyNumber
       ]);
 
   @override
